@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import {VERIFY_USER} from '../Event';
 import '../index.css';
 
+var Crypto = require("crypto-js");
+
 class LoginForm extends Component {
     constructor(props){
         super(props);
@@ -17,12 +19,17 @@ class LoginForm extends Component {
     setUser = ({user, isUser}) => {
       
         let us = {id: Date.now()%1000 , name: this.state.nickname}
+
+        let encrypted_data_name = Crypto.AES.encrypt(JSON.stringify(us.name), 'secret-key@123').toString();
+        let encrypted_data_id = Crypto.AES.encrypt(JSON.stringify(us.id), 'secret-key@123').toString();
+
+        let encrypt = {id: encrypted_data_id, name: encrypted_data_name}
         if(isUser){
             this.setError("Same Text")
             window.alert("Don't type the same text again")
         }
         else{
-            this.props.setUser(us);
+            this.props.setUser(encrypt);
             this.setError("");
         }   
     }
